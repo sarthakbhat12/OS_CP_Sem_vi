@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Based OS Resource Manager</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>OS <span>Simulator</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </li>
+                <li data-view="cpu">
+                    <span class="icon">⚙️</span> CPU Scheduling
+                </li>
+                <li data-view="memory">
+                    <span class="icon">🧠</span> Memory Mgt
+                </li>
+                <li data-view="disk">
+                    <span class="icon">💽</span> Disk Scheduling
+                </li>
+                <li data-view="deadlock">
+                    <span class="icon">🔒</span> Deadlock
+                </li>
+                <li data-view="ml">
+                    <span class="icon">🤖</span> ML Insights
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header>
+                <h1 id="page-title">Dashboard</h1>
+                <div class="user-profile">
+                    <span>Admin Mode</span>
+                    <div class="avatar">A</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <!-- Dashboard View -->
+                <section id="dashboard" class="view-section active">
+                    <div class="glass-card welcome-card">
+                        <div class="card-content">
+                            <h2>Welcome to Intelligent OS Simulator</h2>
+                            <p>An advanced, ML-driven resource management simulation platform. Select a module from the sidebar to begin.</p>
+                            <button class="primary-btn" onclick="document.querySelector('[data-view=\'cpu\']').click()">Get Started</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="glass-card module-card" onclick="document.querySelector('[data-view=\'cpu\']').click()">
+                            <h3>CPU Scheduling</h3>
+                            <p>Compare FCFS, SRTF, RR, Priority with Gantt charts.</p>
+                        </div>
+                        <div class="glass-card module-card" onclick="document.querySelector('[data-view=\'memory\']').click()">
+                            <h3>Memory Management</h3>
+                            <p>Simulate Page Replacement (FIFO, LRU, Optimal).</p>
+                        </div>
+                        <div class="glass-card module-card" onclick="document.querySelector('[data-view=\'disk\']').click()">
+                            <h3>Disk Scheduling</h3>
+                            <p>Analyze FCFS and SSTF head movement.</p>
+                        </div>
+                        <div class="glass-card module-card" onclick="document.querySelector('[data-view=\'deadlock\']').click()">
+                            <h3>Deadlock Detection</h3>
+                            <p>Banker's Algorithm step-by-step verification.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CPU Scheduling View -->
+                <section id="cpu" class="view-section hidden">
+                    <div class="top-controls glass-card">
+                        <button class="secondary-btn" id="generate-cpu-btn">Generate Random Workload</button>
+                        <button class="primary-btn" id="run-cpu-btn">Run Analysis</button>
+                    </div>
+                    
+                    <div class="grid-2-col">
+                        <div class="glass-card">
+                            <h3>Process Table</h3>
+                            <div class="table-container">
+                                <table id="cpu-table">
+                                    <thead>
+                                        <tr>
+                                            <th>PID</th>
+                                            <th>Arrival</th>
+                                            <th>Burst</th>
+                                            <th>Priority</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cpu-tbody">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <h3>Performance Comparison</h3>
+                            <div class="chart-container">
+                                <canvas id="cpu-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card mt-20 ml-insight-card hidden" id="cpu-ml-insight">
+                        <h3>🤖 ML Prediction</h3>
+                        <p id="cpu-ml-text"></p>
+                    </div>
+
+                    <div class="gantt-charts-container mt-20" id="gantt-charts">
+                        <!-- Populated via JS -->
+                    </div>
+                </section>
+
+                <!-- Memory Management View -->
+                <section id="memory" class="view-section hidden">
+                    <div class="top-controls glass-card">
+                        <div class="input-group">
+                            <label>Frames:</label>
+                            <input type="number" id="mem-frames" value="3" min="1" max="10">
+                        </div>
+                        <button class="secondary-btn" id="generate-mem-btn">Generate Reference String</button>
+                        <button class="primary-btn" id="run-mem-btn">Run Simulation</button>
+                    </div>
+                    
+                    <div class="glass-card mt-20">
+                        <h3>Reference String</h3>
+                        <div class="ref-string" id="mem-ref-string">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="grid-2-col mt-20">
+                        <div class="glass-card">
+                            <h3>Page Fault Comparison</h3>
+                            <div class="chart-container">
+                                <canvas id="mem-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <h3>Simulation Steps</h3>
+                            <div class="tabs">
+                                <button class="tab-btn active" data-target="mem-fifo-steps">FIFO</button>
+                                <button class="tab-btn" data-target="mem-lru-steps">LRU</button>
+                                <button class="tab-btn" data-target="mem-opt-steps">Optimal</button>
+                            </div>
+                            <div class="tab-content table-container">
+                                <table id="mem-steps-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Step</th>
+                                            <th>Page</th>
+                                            <th>Result</th>
+                                            <th>Memory State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mem-steps-tbody">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Disk Scheduling View -->
+                <section id="disk" class="view-section hidden">
+                    <div class="top-controls glass-card">
+                        <div class="input-group">
+                            <label>Initial Head:</label>
+                            <input type="number" id="disk-head" value="50" min="0" max="199">
+                        </div>
+                        <button class="secondary-btn" id="generate-disk-btn">Generate Requests</button>
+                        <button class="primary-btn" id="run-disk-btn">Run Simulation</button>
+                    </div>
+
+                    <div class="glass-card mt-20">
+                        <h3>Disk Requests</h3>
+                        <div class="ref-string" id="disk-requests-string">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="grid-2-col mt-20">
+                        <div class="glass-card">
+                            <h3>Seek Time Comparison</h3>
+                            <div class="chart-container">
+                                <canvas id="disk-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <h3>Head Movement Sequence</h3>
+                            <div class="sequence-box" id="disk-sequence">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Deadlock View -->
+                <section id="deadlock" class="view-section hidden">
+                    <div class="top-controls glass-card">
+                        <button class="secondary-btn" id="generate-deadlock-btn">Load Example Matrices</button>
+                        <button class="primary-btn" id="run-deadlock-btn">Run Banker's Algorithm</button>
+                    </div>
+                    
+                    <div class="grid-2-col mt-20">
+                        <div class="glass-card">
+                            <h3>System State Matrices</h3>
+                            <pre id="deadlock-matrices" class="code-block">Click 'Load Example Matrices'</pre>
+                        </div>
+                        <div class="glass-card">
+                            <h3>Detection Result</h3>
+                            <div id="deadlock-result" class="result-box">
+                                Run analysis to see results.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card mt-20 hidden" id="deadlock-steps-card">
+                        <h3>Execution Steps</h3>
+                        <div class="step-container" id="deadlock-steps">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ML Insights View -->
+                <section id="ml" class="view-section hidden">
+                    <div class="glass-card">
+                        <h3>Machine Learning Model Performance</h3>
+                        <p>The system trains a Decision Tree and Random Forest classifier to predict the optimal CPU scheduling algorithm based on workload features.</p>
+                        <div class="grid-2-col mt-20">
+                            <div class="stat-box">
+                                <h4>Decision Tree Accuracy</h4>
+                                <h2 id="ml-dt-acc">--%</h2>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Random Forest Accuracy</h4>
+                                <h2 id="ml-rf-acc">--%</h2>
+                            </div>
+                        </div>
+                        <div class="mt-20">
+                            <h4>Selected Model: <span id="ml-selected-model" class="highlight">--</span></h4>
+                        </div>
+                        <div class="mt-20">
+                            <h4>Classification Report</h4>
+                            <pre id="ml-report" class="code-block">Loading metrics from backend...</pre>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
